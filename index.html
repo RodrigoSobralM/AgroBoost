@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgroBoost | Home</title>
+    <link rel="icon" type="image/svg+xml" href="img/logo.svg" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              agro: {
+                light: "#e8f5e9",
+                DEFAULT: "#4caf50",
+                dark: "#2e7d32",
+                accent: "#fbc02d",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-gray-800">
+    <!-- HEADER -->
+    <header class="bg-agro-dark text-white shadow-md sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <!-- LOGO -->
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-leaf text-agro-accent text-2xl"></i>
+
+            <div>
+              <h1 class="font-bold text-xl sm:text-2xl">AgroBoost</h1>
+
+              <p class="text-[10px] sm:text-xs text-agro-light">
+                Consultor Agrícola Digital
+              </p>
+            </div>
+          </div>
+
+          <!-- BOTÃO MOBILE -->
+          <button id="menu-btn" class="md:hidden text-2xl text-white">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <!-- MENU DESKTOP -->
+          <nav class="hidden md:flex gap-6 text-sm font-medium">
+            <a href="index.html" class="hover:text-agro-accent transition">
+              Home
+            </a>
+
+            <a href="sistema.html" class="hover:text-agro-accent transition">
+              Sistema
+            </a>
+
+            <a
+              href="fale-conosco.html"
+              class="hover:text-agro-accent transition"
+            >
+              Fale Conosco
+            </a>
+          </nav>
+        </div>
+
+        <!-- MENU MOBILE -->
+        <nav
+          id="mobile-menu"
+          class="hidden flex items-center justify-around gap-3 mt-4 md:hidden text-sm border-t border-white/20 pt-4"
+        >
+          <a href="index.html" class="hover:text-agro-accent"> Home </a>
+
+          <a href="sistema.html" class="hover:text-agro-accent"> Sistema </a>
+
+          <a href="fale-conosco.html" class="hover:text-agro-accent">
+            Fale Conosco
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section
+      id="home"
+      class="bg-gradient-to-r from-agro-dark to-agro py-20 text-white"
+    >
+      <div
+        class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-center"
+      >
+        <!-- TEXTO -->
+        <div>
+          <p class="uppercase tracking-widest text-agro-accent font-semibold">
+            ODS 2.4
+          </p>
+
+          <h2 class="text-5xl font-black leading-tight mt-3">
+            Tecnologia para uma agricultura mais sustentável
+          </h2>
+
+          <p class="mt-5 text-lg text-green-50">
+            Receba diagnósticos inteligentes, score de sustentabilidade,
+            simulações e calendário agrícola personalizado.
+          </p>
+
+          <div class="mt-8 flex gap-3">
+            <a
+              href="sistema.html"
+              class="bg-agro-accent text-gray-900 px-6 py-3 rounded-lg font-bold"
+            >
+              Solicitar Demonstração
+            </a>
+          </div>
+        </div>
+
+        <!-- CARDS -->
+        <div class="bg-white/10 rounded-2xl p-8 backdrop-blur">
+          <div class="grid grid-cols-2 gap-4 text-center">
+            <div class="bg-white/10 rounded-xl p-5">
+              <i class="fa-solid fa-seedling text-2xl"></i>
+              <p class="mt-2 font-bold">Diagnóstico</p>
+            </div>
+
+            <div class="bg-white/10 rounded-xl p-5">
+              <i class="fa-solid fa-chart-pie text-2xl"></i>
+              <p class="mt-2 font-bold">Score</p>
+            </div>
+
+            <div class="bg-white/10 rounded-xl p-5">
+              <i class="fa-solid fa-flask text-2xl"></i>
+              <p class="mt-2 font-bold">Simulador</p>
+            </div>
+
+            <div class="bg-white/10 rounded-xl p-5">
+              <i class="fa-solid fa-calendar-days text-2xl"></i>
+              <p class="mt-2 font-bold">Calendário</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section id="sobre" class="max-w-6xl mx-auto px-4 py-16">
+      <h3 class="text-3xl font-bold text-agro-dark text-center">
+        Como o AgroBoost ajuda
+      </h3>
+
+      <div class="grid md:grid-cols-3 gap-6 mt-10">
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <i class="fa-solid fa-droplet text-agro text-2xl"></i>
+
+          <h4 class="font-bold mt-3">Eficiência Hídrica</h4>
+
+          <p class="text-sm mt-2">
+            Redução de desperdício e melhor uso da irrigação.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <i class="fa-solid fa-mound text-agro text-2xl"></i>
+
+          <h4 class="font-bold mt-3">Saúde do Solo</h4>
+
+          <p class="text-sm mt-2">
+            Boas práticas para manter nutrientes e produtividade.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <i class="fa-solid fa-temperature-arrow-up text-agro text-2xl"></i>
+
+          <h4 class="font-bold mt-3">Resiliência Climática</h4>
+
+          <p class="text-sm mt-2">
+            Planejamento para seca, chuva extrema e mudanças climáticas.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-800 text-gray-400 text-center py-6 text-sm">
+      <p>AgroBoost © 2026 - FIAP Engenharia de Software</p>
+      <p>PBL: AgroTech — Todos Contra a Fome</p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script src="script-header.js"></script>
+  </body>
+</html>
