@@ -6,10 +6,6 @@
     <title>AgroBoost | Fale Conosco</title>
     <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg" />
     <link rel="stylesheet" href="../assets/css/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
   </head>
 
   <body class="page-body">
@@ -17,7 +13,10 @@
       <div class="container header-inner">
         <div class="header-row">
           <div class="brand">
-            <i class="fa-solid fa-leaf brand-icon"></i>
+            <svg class="icon brand-icon" viewBox="0 0 24 24">
+              <path d="M5 19c0-7 5-13 14-14 1 9-5 15-14 14Z" />
+              <path d="M5 19c3-5 7-8 11-9" />
+            </svg>
 
             <div>
               <h1 class="brand-title">AgroBoost</h1>
@@ -26,7 +25,11 @@
           </div>
 
           <button id="menu-btn" class="menu-toggle" type="button">
-            <i class="fa-solid fa-bars"></i>
+            <svg class="icon" viewBox="0 0 24 24">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
           </button>
 
           <nav class="desktop-nav">
@@ -50,7 +53,7 @@
         <p class="page-description">Entre em contato com a equipe AgroBoost.</p>
       </div>
 
-      <form class="contact-form">
+      <form class="contact-form" novalidate>
         <div class="form-group">
           <label for="name">Nome Completo</label>
           <input
@@ -58,9 +61,9 @@
             class="field"
             type="text"
             required
-            minlength="3"
             placeholder="Seu nome"
           />
+          <span class="field-error" id="name-error"></span>
         </div>
 
         <div class="form-group">
@@ -72,6 +75,7 @@
             required
             placeholder="email@exemplo.com"
           />
+          <span class="field-error" id="email-error"></span>
         </div>
 
         <div class="form-group">
@@ -81,11 +85,11 @@
             class="field"
             type="tel"
             required
-            pattern="[0-9()\-\s+]{10,}"
             inputmode="tel"
             maxlength="15"
             placeholder="(11) 99999-9999"
           />
+          <span class="field-error" id="phone-error"></span>
         </div>
 
         <div class="form-group">
@@ -97,6 +101,7 @@
             required
             placeholder="Sua cidade"
           />
+          <span class="field-error" id="city-error"></span>
         </div>
 
         <div class="form-group span-full">
@@ -106,9 +111,9 @@
             class="field"
             type="text"
             required
-            minlength="5"
             placeholder="Assunto da mensagem"
           />
+          <span class="field-error" id="subject-error"></span>
         </div>
 
         <div class="form-group span-full">
@@ -117,18 +122,26 @@
             id="message"
             class="field"
             required
-            minlength="10"
             rows="5"
+            maxlength="500"
             placeholder="Digite sua mensagem"
           ></textarea>
+          <div class="char-counter">
+            <span id="message-count">0</span>/500 caracteres
+          </div>
+          <span class="field-error" id="message-error"></span>
         </div>
 
-        <label class="checkbox-line span-full">
-          <input type="checkbox" required />
-          <span>Autorizo contato da equipe AgroBoost.</span>
-        </label>
-
         <div class="span-full">
+          <label class="checkbox-line">
+            <input type="checkbox" id="consent" />
+            <span>Autorizo contato da equipe AgroBoost.</span>
+          </label>
+          <span class="field-error" id="consent-error"></span>
+        </div>
+
+        <div class="span-full form-actions">
+          <p class="form-feedback" id="form-feedback"></p>
           <button class="btn submit-button" type="submit">Enviar Mensagem</button>
         </div>
       </form>

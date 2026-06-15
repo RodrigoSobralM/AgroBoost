@@ -7,11 +7,6 @@ let currentData = {
 let baseScore = { water: 30, soil: 40, bio: 30, climate: 35 };
 let projectedScore = { ...baseScore };
 
-let mainChart, simCurrentChart, simProjectedChart;
-
-Chart.defaults.font.family = "Arial, Helvetica, sans-serif";
-Chart.defaults.color = "#6b7280";
-
 function goToStep(step) {
   if (step === 2) {
     const region = document.querySelector('input[name="region"]:checked');
@@ -71,42 +66,59 @@ function goToStep(step) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function getRadarConfig(dataArr, label, colorHex) {
+function coordenadaRadar(centro, raio, indice, valor) {
+  const angulo = (-90 + indice * 90) * (Math.PI / 180);
+  const distancia = (valor / 100) * raio;
+
   return {
-    type: "radar",
-    data: {
-      labels: ["Água", "Solo", "Biodiversidade", "Clima"],
-      datasets: [
-        {
-          label: label,
-          data: dataArr,
-          backgroundColor: `${colorHex}40`,
-          borderColor: colorHex,
-          pointBackgroundColor: colorHex,
-          pointBorderColor: "#fff",
-          pointHoverBackgroundColor: "#fff",
-          pointHoverBorderColor: colorHex,
-          borderWidth: 2,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        r: {
-          angleLines: { color: "rgba(0, 0, 0, 0.1)" },
-          grid: { color: "rgba(0, 0, 0, 0.1)" },
-          pointLabels: {
-            font: { size: 12, weight: "bold" },
-            color: "#4b5563",
-          },
-          ticks: { display: false, min: 0, max: 100, stepSize: 20 },
-        },
-      },
-      plugins: { legend: { display: false } },
-    },
+    x: Math.round((centro + distancia * Math.cos(angulo)) * 10) / 10,
+    y: Math.round((centro + distancia * Math.sin(angulo)) * 10) / 10,
   };
+}
+
+function desenharRadar(id, valores, cor) {
+  const centro = 130;
+  const raio = 85;
+  const eixos = ["Água", "Solo", "Biodiversidade", "Clima"];
+
+  let grade = "";
+  [25, 50, 75, 100].forEach((nivel) => {
+    const anel = eixos
+      .map((_, i) => {
+        const p = coordenadaRadar(centro, raio, i, nivel);
+        return `${p.x},${p.y}`;
+      })
+      .join(" ");
+    grade += `<polygon points="${anel}" fill="none" stroke="rgba(0, 0, 0, 0.1)" />`;
+  });
+
+  let linhas = "";
+  let rotulos = "";
+  eixos.forEach((nome, i) => {
+    const ponta = coordenadaRadar(centro, raio, i, 100);
+    linhas += `<line x1="${centro}" y1="${centro}" x2="${ponta.x}" y2="${ponta.y}" stroke="rgba(0, 0, 0, 0.1)" />`;
+
+    const rotulo = coordenadaRadar(centro, raio + 18, i, 100);
+    rotulos += `<text x="${rotulo.x}" y="${rotulo.y}" text-anchor="middle" dominant-baseline="middle" font-size="11" font-weight="bold" fill="#4b5563">${nome}</text>`;
+  });
+
+  const area = valores
+    .map((valor, i) => {
+      const p = coordenadaRadar(centro, raio, i, valor);
+      return `${p.x},${p.y}`;
+    })
+    .join(" ");
+
+  let pontos = "";
+  valores.forEach((valor, i) => {
+    const p = coordenadaRadar(centro, raio, i, valor);
+    pontos += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="${cor}" />`;
+  });
+
+  document.getElementById(id).innerHTML =
+    `<svg viewBox="0 0 260 260" class="radar-svg">${grade}${linhas}` +
+    `<polygon points="${area}" fill="${cor}" fill-opacity="0.25" stroke="${cor}" stroke-width="2" />` +
+    `${pontos}${rotulos}</svg>`;
 }
 
 function calcTotal(scoreObj) {
@@ -144,10 +156,7 @@ function calculateBaseScore() {
     baseScore.climate,
   ];
 
-  if (mainChart) mainChart.destroy();
-
-  const ctx = document.getElementById("scoreChart").getContext("2d");
-  mainChart = new Chart(ctx, getRadarConfig(dataArr, "Score Atual", "#fbc02d"));
+  desenharRadar("scoreChart", dataArr, "#fbc02d");
 }
 
 function initSimulator() {
@@ -178,9 +187,9 @@ function updateSimulator() {
 
   document.getElementById("sim-current-score").innerText = currTotal;
   document.getElementById("sim-projected-score").innerHTML =
-    `${projTotal} <i class="fa-solid fa-arrow-trend-up trend-up ${
+    `${projTotal} <svg class="icon trend-up ${
       projTotal > currTotal ? "" : "hidden"
-    }" id="sim-trend-icon"></i>`;
+    }" id="sim-trend-icon" viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7" /><polyline points="15 7 21 7 21 13" /></svg>`;
 
   const currData = [
     baseScore.water,
@@ -195,23 +204,28 @@ function updateSimulator() {
     projectedScore.climate,
   ];
 
-  if (simCurrentChart) simCurrentChart.destroy();
-  if (simProjectedChart) simProjectedChart.destroy();
-
-  simCurrentChart = new Chart(
-    document.getElementById("simChartCurrent").getContext("2d"),
-    getRadarConfig(currData, "Atual", "#9ca3af"),
-  );
-
-  simProjectedChart = new Chart(
-    document.getElementById("simChartProjected").getContext("2d"),
-    getRadarConfig(projData, "Projetado", "#4caf50"),
-  );
+  desenharRadar("simChartCurrent", currData, "#9ca3af");
+  desenharRadar("simChartProjected", projData, "#4caf50");
 }
 
 document.querySelectorAll(".sim-checkbox").forEach((cb) => {
   cb.addEventListener("change", updateSimulator);
 });
+
+function iconeSVG(nome) {
+  const formas = {
+    tractor:
+      `<circle cx="7" cy="16" r="3.5" /><circle cx="18" cy="17" r="2.5" /><path d="M4 13V8h6l2 5" /><path d="M12 13h4l2-3" /><path d="M10 8V6h3" />`,
+    seedling:
+      `<path d="M12 20v-7" /><path d="M12 13c-1-4-4-5-7-5 0 4 3 6 7 5Z" /><path d="M12 11c1-3 4-4 6-4 0 3-3 5-6 4Z" />`,
+    leaf:
+      `<path d="M5 19c0-7 5-13 14-14 1 9-5 15-14 14Z" /><path d="M5 19c3-5 7-8 11-9" />`,
+    wheat:
+      `<line x1="12" y1="21" x2="12" y2="10" /><path d="M12 10c0-2 1.5-3.5 3.5-3.5 0 2-1.5 3.5-3.5 3.5ZM12 10c0-2-1.5-3.5-3.5-3.5 0 2 1.5 3.5 3.5 3.5ZM12 14c0-2 1.5-3.5 3.5-3.5 0 2-1.5 3.5-3.5 3.5ZM12 14c0-2-1.5-3.5-3.5-3.5 0 2 1.5 3.5 3.5 3.5ZM12 7c0-2 1.5-3.5 3.5-3.5 0 2-1.5 3.5-3.5 3.5ZM12 7c0-2-1.5-3.5-3.5-3.5 0 2 1.5 3.5 3.5 3.5Z" />`,
+  };
+
+  return formas[nome] || "";
+}
 
 function generateCalendar() {
   const container = document.getElementById("calendar-timeline");
@@ -228,7 +242,7 @@ function generateCalendar() {
     {
       month: "Setembro - Outubro",
       title: "Preparo Sustentável do Solo",
-      icon: "fa-tractor",
+      icon: "tractor",
       color: "icon-brown",
       dot: "dot-amber",
       desc: hasPD
@@ -238,7 +252,7 @@ function generateCalendar() {
     {
       month: "Novembro - Dezembro",
       title: `Plantio de ${currentData.crop}`,
-      icon: "fa-seedling",
+      icon: "seedling",
       color: "icon-green",
       dot: "dot-green",
       desc: `Semeadura do ${currentData.crop} aproveitando o início das chuvas na região ${currentData.region}. Garantir espaçamento adequado para evitar competição por luz.`,
@@ -246,7 +260,7 @@ function generateCalendar() {
     {
       month: "Janeiro - Fevereiro",
       title: "Manejo e Crescimento",
-      icon: "fa-leaf",
+      icon: "leaf",
       color: "icon-green",
       dot: "dot-light",
       desc: hasIrrigacao
@@ -256,7 +270,7 @@ function generateCalendar() {
     {
       month: "Março - Abril",
       title: "Colheita e Pós-Colheita",
-      icon: "fa-wheat-awn",
+      icon: "wheat",
       color: "icon-yellow",
       dot: "dot-yellow",
       desc: `Realizar a colheita do ${currentData.crop}. Importante: Deixar os restos culturais no campo para proteger o solo para a próxima safra.`,
@@ -274,7 +288,7 @@ function generateCalendar() {
           <div class="timeline-card">
             <span class="timeline-month-mobile">${ev.month}</span>
             <h4>
-              <i class="fa-solid ${ev.icon} ${ev.color}"></i>
+              <svg class="icon ${ev.color}" viewBox="0 0 24 24">${iconeSVG(ev.icon)}</svg>
               ${ev.title}
             </h4>
             <p>${ev.desc}</p>
@@ -304,4 +318,31 @@ function animateValue(id, start, end, duration) {
   };
 
   window.requestAnimationFrame(step);
+}
+
+function formatarDataBrasileira(data) {
+  const dia = String(data.getDate()).padStart(2, "0");
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const ano = data.getFullYear();
+  const hora = String(data.getHours()).padStart(2, "0");
+  const minuto = String(data.getMinutes()).padStart(2, "0");
+
+  return `${dia}/${mes}/${ano}, ${hora}:${minuto}`;
+}
+
+function atualizarDataPDF() {
+  const printDate = document.getElementById("print-date");
+
+  if (printDate) {
+    printDate.innerText = formatarDataBrasileira(new Date());
+  }
+}
+
+function gerarPDF() {
+  const tituloOriginal = document.title;
+
+  atualizarDataPDF();
+  document.title = " ";
+  window.print();
+  document.title = tituloOriginal;
 }
